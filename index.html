@@ -63,43 +63,119 @@ details.older>summary img{width:54px;height:54px;flex:none}
 details.older .week-body{padding:0 18px 12px}
 .older-h{margin-top:46px;font-size:24px}
 @media(max-width:640px){details.older>summary img{display:none}details.older .week-body{padding:0 10px 8px}}
+.ilabel{display:inline-block;background:var(--void);color:#F0D272;font-family:'Cinzel',serif;font-weight:900;font-size:17px;letter-spacing:.08em;padding:7px 16px 6px;border-left:5px solid var(--gold);margin:0 0 -1px}
+.ilabel small{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;letter-spacing:.1em;color:#CDBF9C;margin-left:10px}
+.week{margin:40px 0 10px}
+.searchbox{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--gold);padding:16px 18px;margin:18px 0}
+.searchbox label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--gold-ink);text-transform:uppercase;display:block;margin-bottom:6px}
+.srow{display:flex;gap:8px}
+.srow input{flex:1;min-width:0;font:inherit;font-size:17px;padding:10px 12px;border:1px solid #bfb39a;background:#fff;color:var(--ink);border-radius:3px}
+.srow button{font-family:'IBM Plex Mono',monospace;font-size:13px;padding:0 14px;border:1px solid var(--void);background:var(--void);color:#F0D272;cursor:pointer;border-radius:3px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chips button{font-family:'IBM Plex Mono',monospace;font-size:12px;padding:4px 9px;border:1px solid #c9bfa8;background:#fff;color:var(--soft);cursor:pointer;border-radius:14px}
+.chips button:hover{border-color:var(--gold);color:var(--ink)}
+#results{display:none}
+.rcount{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--soft);margin:14px 0 4px}
+.rgroup{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);padding:12px 18px 6px;margin:12px 0}
+.rgroup .where{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--gold-ink);text-transform:uppercase;margin-bottom:4px}
+.rgroup .where a{color:var(--gold-ink)}
+.rgroup ul{padding-left:20px;margin:6px 0 8px}.rgroup li{margin:5px 0}
+mark{background:#F0D272;color:var(--ink);padding:0 2px}
 </style>
 </head>
 <body>
 <div class="topbar"><span class="brand"><img src="sunday-buzz-logo.png" alt="">Utah Hive Politics · from the publisher of The Weber County Hive</span><span><a href="index.html">All issues</a> · <a href="https://webercountyhive.substack.com" target="_blank" rel="noopener">Substack</a></span></div>
 <header class="masthead"><div class="mh"><img src="sunday-buzz-logo.png" alt="The Sunday Buzz seal: a bee reading the paper"><div><div class="eyebrow">Utah Hive Politics · The Weber County Hive</div><h1 class="title">The Sunday Buzz</h1><p class="dek">Every week in the hive, in one place.</p></div></div></header>
 <main>
-<div class="box"><b>What this is</b>Every Sunday we round up what was published and what was added to the Hive's case files that week, with links straight to each page, plus what's coming up. The five most recent weeks are shown in full below. Older weeks fold into the list at the bottom, and every issue keeps its own permanent page.</div>
+<div class="box"><b>What this is</b>Every Sunday we round up what was published and what was added to the Hive's case files that week, with links straight to each page, plus what's coming up. The five most recent weeks are shown in full below, each labeled by issue. Older weeks fold into the list at the bottom, and every issue keeps its own permanent page. Use the search box to find a name, district, city or topic in every issue at once.</div>
+<div class="searchbox"><label for="q">Search every issue</label>
+<div class="srow"><input id="q" type="search" placeholder="A name, district, city or topic, like HD-16, Roy, Stevenson or water" autocomplete="off"><button type="button" id="qclear">Clear</button></div>
+<div class="chips" id="chips"></div></div>
+<div id="results"></div>
+<div id="weeks">
 <h2 style="margin-top:28px;font-size:24px">The last five weeks</h2>
 <div id="recent"></div>
 <h2 class="older-h" id="older-h" hidden>Earlier issues</h2>
 <div id="older"></div>
-<script src="buzz-data.js?v=3"></script>
+</div>
+<script src="buzz-data.js?v=4"></script>
 <script>
 (function(){
-var SHOW=5;
+var SHOW=5, cache={};
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function label(i){return '<div class="ilabel">ISSUE '+i.num+'<small>'+i.date+'</small></div>';}
 function card(i){return '<a class="issue" href="'+i.link+'"><img src="sunday-buzz-logo.png" alt=""><div><div class="num">Issue '+i.num+' · '+i.date+'</div><h3>'+i.title+'</h3><p>'+i.summary+'</p></div></a>';}
-function load(i,box){
-  fetch(i.link,{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
+function get(i){
+  if(!cache[i.link]) cache[i.link]=fetch(i.link,{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
     var d=new DOMParser().parseFromString(t,'text/html');var m=d.querySelector('main');if(!m)throw 0;
-    var out='';m.querySelectorAll(':scope > .intro, :scope > section.blk').forEach(function(el){out+=el.outerHTML;});
-    box.innerHTML=out+'<p class="weeknote"><a href="'+i.link+'">Open Issue '+i.num+' on its own page →</a></p>';
-    box.querySelectorAll('a[href^="#"]').forEach(function(a){a.setAttribute('href',i.link+a.getAttribute('href'));});
-  }).catch(function(){box.innerHTML='<p class="weeknote"><a href="'+i.link+'">Read Issue '+i.num+' →</a></p>';});
+    var els=[].slice.call(m.querySelectorAll(':scope > .intro, :scope > section.blk'));
+    els.forEach(function(el){el.querySelectorAll('a[href^="#"]').forEach(function(a){a.setAttribute('href',i.link+a.getAttribute('href'));});});
+    return els;
+  });
+  return cache[i.link];
+}
+function fill(i,box){
+  get(i).then(function(els){box.innerHTML=els.map(function(e){return e.outerHTML;}).join('')+'<p class="weeknote"><a href="'+i.link+'">Open Issue '+i.num+' on its own page →</a></p>';})
+  .catch(function(){box.innerHTML='<p class="weeknote"><a href="'+i.link+'">Read Issue '+i.num+' →</a></p>';});
 }
 var rec=document.getElementById('recent'),old=document.getElementById('older');
 BUZZ_ISSUES.forEach(function(i,n){
   if(n<SHOW){
-    var w=document.createElement('div');w.className='week';w.innerHTML=card(i)+'<div class="week-body">Loading…</div>';
-    rec.appendChild(w);load(i,w.querySelector('.week-body'));
+    var w=document.createElement('div');w.className='week';w.id='issue-'+i.num;
+    w.innerHTML=label(i)+card(i)+'<div class="week-body">Loading…</div>';
+    rec.appendChild(w);fill(i,w.querySelector('.week-body'));
   }else{
     document.getElementById('older-h').hidden=false;
-    var dt=document.createElement('details');dt.className='older';
-    dt.innerHTML='<summary><img src="sunday-buzz-logo.png" alt=""><div><div style="font-family:IBM Plex Mono,monospace;font-size:12px;letter-spacing:.1em;color:var(--gold-ink);text-transform:uppercase">Issue '+i.num+' · '+i.date+'</div><h3 style="font-family:Cinzel,serif;font-size:20px;margin:4px 0">'+i.title+'</h3><p style="margin:0;color:var(--soft);font-size:15px">'+i.summary+'</p></div><span class="chev"><span class="o">Show ▾</span><span class="c">Hide ▴</span></span></summary><div class="week-body"></div>';
-    var done=false;dt.addEventListener('toggle',function(){if(dt.open&&!done){done=true;load(i,dt.querySelector('.week-body'));}});
+    var dt=document.createElement('details');dt.className='older';dt.id='issue-'+i.num;
+    dt.innerHTML='<summary><img src="sunday-buzz-logo.png" alt=""><div><div class="ilabel" style="font-size:14px;padding:4px 12px">ISSUE '+i.num+'<small>'+i.date+'</small></div><h3 style="font-family:Cinzel,serif;font-size:20px;margin:8px 0 4px">'+i.title+'</h3><p style="margin:0;color:var(--soft);font-size:15px">'+i.summary+'</p></div><span class="chev"><span class="o">Show ▾</span><span class="c">Hide ▴</span></span></summary><div class="week-body"></div>';
+    var done=false;dt.addEventListener('toggle',function(){if(dt.open&&!done){done=true;fill(i,dt.querySelector('.week-body'));}});
     old.appendChild(dt);
   }
 });
+/* search words: tags from buzz-data.js, most used first */
+var count={};BUZZ_ISSUES.forEach(function(i){(i.tags||[]).forEach(function(t){count[t]=(count[t]||0)+1;});});
+var tags=Object.keys(count).sort(function(a,b){return count[b]-count[a]||a.localeCompare(b);}).slice(0,24);
+var chips=document.getElementById('chips');
+chips.innerHTML=tags.map(function(t){return '<button type="button">'+esc(t)+'</button>';}).join('');
+chips.addEventListener('click',function(e){if(e.target.tagName==='BUTTON'){q.value=e.target.textContent;run();q.focus();}});
+var q=document.getElementById('q'),res=document.getElementById('results'),weeks=document.getElementById('weeks');
+function hl(node,term){
+  var w=document.createTreeWalker(node,NodeFilter.SHOW_TEXT,null),list=[],x;while(x=w.nextNode())list.push(x);
+  var re=new RegExp('('+term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig');
+  list.forEach(function(t){if(!re.test(t.nodeValue))return;re.lastIndex=0;var span=document.createElement('span');span.innerHTML=esc(t.nodeValue).replace(re,'<mark>$1</mark>');t.parentNode.replaceChild(span,t);});
+}
+var timer;
+function run(){
+  var term=q.value.trim();
+  if(term.length<2){res.style.display='none';weeks.style.display='';return;}
+  res.style.display='block';weeks.style.display='none';res.innerHTML='<p class="rcount">Searching…</p>';
+  var low=term.toLowerCase();
+  Promise.all(BUZZ_ISSUES.map(function(i){return get(i).then(function(els){return {i:i,els:els};},function(){return {i:i,els:[]};});})).then(function(all){
+    if(q.value.trim()!==term)return;
+    var html='',hits=0;
+    all.forEach(function(o){
+      var tagHit=(o.i.tags||[]).some(function(t){return t.toLowerCase().indexOf(low)>-1;});
+      o.els.forEach(function(el){
+        var h2=el.querySelector('h2');var box=h2?h2.textContent:'Introduction';
+        var items=[].slice.call(el.querySelectorAll('li, p')).filter(function(n){
+          if(n.tagName==='P'&&n.closest('li'))return false;
+          if(n.tagName==='LI'&&n.querySelector('li'))return false;
+          return n.textContent.toLowerCase().indexOf(low)>-1;});
+        if(el.classList.contains('intro')&&el.textContent.toLowerCase().indexOf(low)>-1)items=[el];
+        if(!items.length)return;
+        hits+=items.length;
+        var ul=document.createElement('ul');
+        items.forEach(function(n){var li=document.createElement('li');li.innerHTML=n.innerHTML;hl(li,term);ul.appendChild(li);});
+        html+='<div class="rgroup"><div class="where"><a href="'+o.i.link+'">Issue '+o.i.num+' · '+o.i.date+'</a> › '+esc(box)+'</div>'+ul.outerHTML+'</div>';
+      });
+      if(tagHit&&html.indexOf('Issue '+o.i.num+' ·')<0){hits++;html+='<div class="rgroup"><div class="where"><a href="'+o.i.link+'">Issue '+o.i.num+' · '+o.i.date+'</a></div><ul><li>'+esc(o.i.summary)+'</li></ul></div>';}
+    });
+    res.innerHTML='<p class="rcount">'+(hits?hits+' match'+(hits==1?'':'es')+' for “'+esc(term)+'”':'No matches for “'+esc(term)+'”. Try a shorter word, a last name or a district like HD-16.')+'</p>'+html;
+  });
+}
+q.addEventListener('input',function(){clearTimeout(timer);timer=setTimeout(run,200);});
+document.getElementById('qclear').addEventListener('click',function(){q.value='';run();q.focus();});
+var p=new URLSearchParams(location.search).get('q');if(p){q.value=p;run();}
 })();
 </script>
 </main>
