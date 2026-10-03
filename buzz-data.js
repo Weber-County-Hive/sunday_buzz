@@ -2,6 +2,13 @@
 // To add an issue: copy the block below, paste it at the TOP of the list, and change each value.
 const BUZZ_ISSUES = [
   {
+    num: "02",
+    date: "Oct. 4, 2026",
+    title: "The Sunday Buzz — Oct. 4, 2026",
+    summary: "Seven stories, Sept. 30 money in seven race files, new HD-6, UT-2 and SD-7 files, one grading scale for every party, four new maps, the Utah Referendum Docket, West Haven's energy tax and the Ledger's industry pages.",
+    link: "2026-10-04.html"
+  },
+  {
     num: "01",
     date: "Sept. 27, 2026",
     title: "The Sunday Buzz — Sept. 27, 2026",
