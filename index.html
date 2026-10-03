@@ -48,18 +48,59 @@ footer .w{max-width:var(--max);margin:0 auto;display:flex;flex-direction:column;
 footer h3{color:#F0D272;font-size:18px}footer p{margin:0;font-size:14px}
 footer a{color:var(--gold);text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:12.5px}footer a:hover{color:#fff}
 @media(max-width:640px){.mh{flex-direction:column;align-items:flex-start;padding:34px 18px 28px;gap:16px}.mh img{width:96px;height:96px}main{padding:6px 16px 0}section.blk{padding:16px 16px 8px}.issue img{display:none}}
+.tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:1px 7px;border-radius:3px;margin-right:4px;vertical-align:1px;white-space:nowrap}.tag.new{background:var(--gold);color:var(--void)}.tag.up{background:#1f3a5a;color:#fff}.tag.fix{background:#e6e1d4;color:#3a3328;border:1px solid #c9bfa8}
+.week{margin:34px 0 10px}
+.week>.issue{border-left-width:6px}
+.week .intro{margin:16px 0 4px}
+.week-body{padding-left:0}
+.weeknote{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--soft);margin:10px 0 0}
+details.older{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--line);margin:14px 0}
+details.older>summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;gap:16px;align-items:center}
+details.older>summary::-webkit-details-marker{display:none}
+details.older>summary .chev{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--gold-ink);white-space:nowrap}
+details.older[open]>summary .chev .o{display:none}details.older:not([open])>summary .chev .c{display:none}
+details.older>summary img{width:54px;height:54px;flex:none}
+details.older .week-body{padding:0 18px 12px}
+.older-h{margin-top:46px;font-size:24px}
+@media(max-width:640px){details.older>summary img{display:none}details.older .week-body{padding:0 10px 8px}}
 </style>
 </head>
 <body>
 <div class="topbar"><span class="brand"><img src="sunday-buzz-logo.png" alt="">Utah Hive Politics · from the publisher of The Weber County Hive</span><span><a href="index.html">All issues</a> · <a href="https://webercountyhive.substack.com" target="_blank" rel="noopener">Substack</a></span></div>
 <header class="masthead"><div class="mh"><img src="sunday-buzz-logo.png" alt="The Sunday Buzz seal: a bee reading the paper"><div><div class="eyebrow">Utah Hive Politics · The Weber County Hive</div><h1 class="title">The Sunday Buzz</h1><p class="dek">Every week in the hive, in one place.</p></div></div></header>
 <main>
-<div class="box"><b>What this is</b>Every Sunday we round up what was published and what was added to the Hive's case files that week, with links straight to each page, plus what's coming up. Each issue stays here as a permanent archive.</div>
-<h2 style="margin-top:28px;font-size:24px">All issues</h2>
-<div class="issues" id="issues"></div>
-<script src="buzz-data.js"></script>
+<div class="box"><b>What this is</b>Every Sunday we round up what was published and what was added to the Hive's case files that week, with links straight to each page, plus what's coming up. The five most recent weeks are shown in full below. Older weeks fold into the list at the bottom, and every issue keeps its own permanent page.</div>
+<h2 style="margin-top:28px;font-size:24px">The last five weeks</h2>
+<div id="recent"></div>
+<h2 class="older-h" id="older-h" hidden>Earlier issues</h2>
+<div id="older"></div>
+<script src="buzz-data.js?v=3"></script>
 <script>
-document.getElementById('issues').innerHTML=BUZZ_ISSUES.map(i=>`<a class="issue" href="${i.link}"><img src="sunday-buzz-logo.png" alt=""><div><div class="num">Issue ${i.num} · ${i.date}</div><h3>${i.title}</h3><p>${i.summary}</p></div></a>`).join('');
+(function(){
+var SHOW=5;
+function card(i){return '<a class="issue" href="'+i.link+'"><img src="sunday-buzz-logo.png" alt=""><div><div class="num">Issue '+i.num+' · '+i.date+'</div><h3>'+i.title+'</h3><p>'+i.summary+'</p></div></a>';}
+function load(i,box){
+  fetch(i.link,{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
+    var d=new DOMParser().parseFromString(t,'text/html');var m=d.querySelector('main');if(!m)throw 0;
+    var out='';m.querySelectorAll(':scope > .intro, :scope > section.blk').forEach(function(el){out+=el.outerHTML;});
+    box.innerHTML=out+'<p class="weeknote"><a href="'+i.link+'">Open Issue '+i.num+' on its own page →</a></p>';
+    box.querySelectorAll('a[href^="#"]').forEach(function(a){a.setAttribute('href',i.link+a.getAttribute('href'));});
+  }).catch(function(){box.innerHTML='<p class="weeknote"><a href="'+i.link+'">Read Issue '+i.num+' →</a></p>';});
+}
+var rec=document.getElementById('recent'),old=document.getElementById('older');
+BUZZ_ISSUES.forEach(function(i,n){
+  if(n<SHOW){
+    var w=document.createElement('div');w.className='week';w.innerHTML=card(i)+'<div class="week-body">Loading…</div>';
+    rec.appendChild(w);load(i,w.querySelector('.week-body'));
+  }else{
+    document.getElementById('older-h').hidden=false;
+    var dt=document.createElement('details');dt.className='older';
+    dt.innerHTML='<summary><img src="sunday-buzz-logo.png" alt=""><div><div style="font-family:IBM Plex Mono,monospace;font-size:12px;letter-spacing:.1em;color:var(--gold-ink);text-transform:uppercase">Issue '+i.num+' · '+i.date+'</div><h3 style="font-family:Cinzel,serif;font-size:20px;margin:4px 0">'+i.title+'</h3><p style="margin:0;color:var(--soft);font-size:15px">'+i.summary+'</p></div><span class="chev"><span class="o">Show ▾</span><span class="c">Hide ▴</span></span></summary><div class="week-body"></div>';
+    var done=false;dt.addEventListener('toggle',function(){if(dt.open&&!done){done=true;load(i,dt.querySelector('.week-body'));}});
+    old.appendChild(dt);
+  }
+});
+})();
 </script>
 </main>
 <footer><div class="w"><h3>The Sunday Buzz</h3><p>A weekly recap from Utah Hive Politics and The Weber County Hive. Public records only. Every claim links to its source.</p><div><a href="https://webercountyhive.substack.com" target="_blank" rel="noopener">webercountyhive.substack.com</a> · <a href="https://github.com/Weber-County-Hive" target="_blank" rel="noopener">All Hive repos</a></div></div></footer>
