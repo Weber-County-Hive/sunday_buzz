@@ -3,6 +3,15 @@
 // tags: the search words shown as buttons on the front page (names, districts, places, topics). The search box also reads every issue page in full.
 const BUZZ_ISSUES = [
   {
+    num: "03",
+    date: "Oct. 11, 2026",
+    title: "The Sunday Buzz — Oct. 11, 2026",
+    summary: "Six stories, the Amendments A and B case file with Fact or Fiction, a quiz and checked comments, two new surveillance pieces, the EDCUtah profile, Counting the Jobs, the new tips log, and every repo update tagged New or Updated.",
+    link: "2026-10-11.html",
+    tags: ["Amendment A","Amendment B","S.J.R. 2","H.J.R. 10","H.B. 481","ballot","initiative","referendum","60%","Fact or Fiction","quiz","Transparency","Surveillance","Flock","ALPR","EDCUtah","Unelected Power","Ryan Starks","Jon Hawkins","Site Ready Utah","West Weber","data centers","Stratos","Counting the Jobs","tips","Truth in Taxation","property tax","Eagle Mountain","Community Calendar","Wasatch County","Pioneer Trail"]
+
+  },
+  {
     num: "02",
     date: "Oct. 4, 2026",
     title: "The Sunday Buzz — Oct. 4, 2026",
