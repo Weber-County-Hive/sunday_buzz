@@ -3,6 +3,14 @@
 // tags: the search words shown as buttons on the front page (names, districts, places, topics). The search box also reads every issue page in full.
 const BUZZ_ISSUES = [
   {
+    num: "04",
+    date: "Oct. 18, 2026",
+    title: "The Sunday Buzz — Oct. 18, 2026",
+    summary: "Six stories, all 57 judges on your ballot with the new judge rubric, the Research Your Candidates guide from the Roy library talk, Utah's tax laws in eight pages, the Grand Hyatt and MIDA, two new audits with plain-words pages, the cartoon page, and every repo update tagged New or Updated.",
+    link: "2026-10-18.html",
+    tags: ["judges","judicial retention","JPEC","judge rubric","Research Your Candidates","Roy library","HD-66","Troy Shelley","Taxation","tax cuts","tax increases","62 bills","TIF","PID","MIDA","Grand Hyatt","Deer Valley","Weber County taxes","audits","World Trade Center Utah","iMpact Utah","MEP","GOED","Weber Housing Authority","cartoons","Drawn From the Record","News Spotlights","Agent Orange","Sunset","Pineview","Ogden Valley","Huntsville","artesian wells","checkbox","H.B. 504","Froerer","campaign finance deadlines"]
+  },
+  {
     num: "03",
     date: "Oct. 11, 2026",
     title: "The Sunday Buzz — Oct. 11, 2026",
