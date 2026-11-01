@@ -3,6 +3,14 @@
 // tags: the search words shown as buttons on the front page (names, districts, places, topics). The search box also reads every issue page in full.
 const BUZZ_ISSUES = [
   {
+    num: "06",
+    date: "Nov. 1, 2026",
+    title: "The Sunday Buzz — Nov. 1, 2026",
+    summary: "Fourteen stories, How PIDs Work, the housing and Ogden case files, the Wildcat Square CRA, how a book gets pulled from every Utah school, Utah's school book laws, Brammer's record, Falcon Hill and Roy, MAP 010 and MAP 011, Hansel Valley, the new GSL Votes repo, and where to vote on Nov. 3.",
+    link: "2026-11-01.html",
+    tags: ["PID", "How PIDs Work", "housing", "Build HUBS", "Ogden", "Wildcat Square", "CRA", "Weber State", "school books", "book removal", "State School Board", "Bill Tracker", "Brady Brammer", "SD-21", "SD-7", "HD-6", "HD-66", "HD-13", "UT-4", "Wasatch", "Seat C", "Roy", "Prop 10", "Falcon Hill", "MIDA", "Utah Taxpayers Association", "Hansel Valley", "Box Elder", "data centers", "Great Salt Lake", "GSL Votes", "Jason Kyle", "maps", "FrontRunner", "TRAX", "Election Day", "vote"]
+  },
+  {
     num: "05",
     date: "Oct. 25, 2026",
     title: "The Sunday Buzz — Oct. 25, 2026",
