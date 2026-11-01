@@ -3,6 +3,14 @@
 // tags: the search words shown as buttons on the front page (names, districts, places, topics). The search box also reads every issue page in full.
 const BUZZ_ISSUES = [
   {
+    num: "05",
+    date: "Oct. 25, 2026",
+    title: "The Sunday Buzz — Oct. 25, 2026",
+    summary: "Six stories, 57 judges, the bills that never got a final vote, Altura and Roy's Prop 10, ten years of petition laws, the Checkbox and Utah Taxpayers Association case files, the Inland Port hearing check, nuclear and data centers, the Bears Ears fact-check, and where and when to vote.",
+    link: "2026-10-25.html",
+    tags: ["judges", "JPEC", "Crosby", "UT-2", "UT-4", "HD-66", "Doers Network", "GRAMA", "checkbox", "at-risk", "Bill Tracker", "petition laws", "initiative", "referendum", "Utah Taxpayers Association", "Weber Fire District", "annexation", "Roy", "Riverdale", "Inland Port", "UIPA", "data centers", "nuclear", "West Weber", "Bears Ears", "Grand Staircase", "public lands", "Altura", "North Ogden", "Prop 10", "Election Day", "vote"]
+  },
+  {
     num: "04",
     date: "Oct. 18, 2026",
     title: "The Sunday Buzz — Oct. 18, 2026",
